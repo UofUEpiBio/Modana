@@ -117,5 +117,6 @@ summary(getres$out.combined)
 The refined estimates of the main treatment and effect modifiers can pulled and compared with both the direct and indirect models.
 ```{r}
 print(getres$comparisonresults)
+plot(getres$out.combined)
 ```
 
