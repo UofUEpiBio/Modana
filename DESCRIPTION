@@ -1,0 +1,26 @@
+Package: Modana
+Type: Package
+Title: Refined Moderation Analysis with binary outcomes
+Version: 0.1.0
+Author: Eric Anto
+Maintainer: Eric Anto <eric.anto@utah.edu>
+Description: This package employs the symmetry property concerning the ratio of odds ratios, which suggests that both the    main treatment and the heterogeneous treatment effects could
+  be equivalently estimated via a role exchange between the outcome and treatment variable in logistic regression
+  models. Refined inference on moderating effects is obtained by rearranging data and combing two models into
+  one via a generalized estimating equation (GEE) approach.
+License: GPL(>= 2)
+Imports: 
+    MASS,
+    geepack,
+    stats,
+    utils,
+    data.table
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr

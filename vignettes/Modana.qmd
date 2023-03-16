@@ -1,0 +1,12 @@
+---
+title: "Modana"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Modana}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup}
+library(Modana)
+```
