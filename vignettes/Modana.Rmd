@@ -35,7 +35,6 @@ install.packages("../Modana_0.1.0.tar.gz", repos = NULL)
 library(Modana)
 ```
 
-
 # Simulating data
 The function `sim_data()` generates simulated data for a randomized controlled trial or an observational study
 The function takes several arguments including a formula object, data frame, the name of the binary response and binary treatment column in the data, a vector of potential effect modifiers, and other arguments that are passed to the geeglm function. If effect modifiers are specified, the function fits models with interaction terms between the effect modifiers and the treatment variable.
