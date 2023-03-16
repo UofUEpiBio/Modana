@@ -74,3 +74,23 @@ print(getres$Geerefinedmodel)
 ```
 
 
+Example usage on a real-world data
+```{r}
+#install.packages("CERFIT")
+library(CERFIT)
+data(warts, package =  "CERFIT")
+dat <- warts
+#data wrangling
+dat$Type <- ifelse(dat$Type==3, 1, 0)
+dat$response <- dat$Result_of_Treatment
+```
+
+
+```{r}
+res <- refinedmod(formula = response ~ treatment + age + Time + Type,
+                     detail = FALSE, y = "response",
+                    trt = "treatment", data = dat,
+                     effmod = c("age", "Type"),
+                      corstr = "independence")
+print(res$comparisonresults)
+```
