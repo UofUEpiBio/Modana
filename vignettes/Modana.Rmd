@@ -157,7 +157,7 @@ The refined estimates of the main treatment and effect modifiers can pulled and 
 print(getres$comparisonresults)
 #plot(getres$out.combined)
 ```
-## Real World Data Example
+
 
 ### Example usage on a real-world data
 ```{r}
