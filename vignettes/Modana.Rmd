@@ -67,11 +67,11 @@ The function takes several arguments including a formula object, data frame, the
 - `details`	a logical value indicating whether to print details about the generated data. The default value is FALSE.
 
 ```{r}
-set.seed(1001)
+set.seed(1099)
 b0 <- c(1, 1.2, 1, 1.5, -2, -.5, 1.2, 1.5)
 a0 <- c(-1, 1.5, -1, 1.5)
 #a0 <- c(-2, 2, 2, 0, 1)
-b0 <- c(-1, 1.5, 1.5, 2, 2, -.5, 2, 1.5)
+b0 <- c(-1.5, 1.5, 1.5, -2, 2, -.5, -1, 1.5)
  datt <- sim_data(n = 100, b0, a0 = NULL, binary.Xs = FALSE,
                       sigma = 1, uniform = FALSE, c0 = 1,
                       link.function = "logistic", rho = 0.2,
@@ -108,12 +108,15 @@ If the `detail` argument is set to TRUE, the function will print summary results
 
 ```{r}
 getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
-                     detail = TRUE, y = "y",
+                     detail = FALSE, y = "y",
                     trt = "trt", data = datt,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
-print(getres$comparisonresults)
-getres$comparisonresults
 summary(getres$out.combined)
+```
+
+The refined estimates of the main treatment and effect modifiers can pulled and compared with both the direct and indirect models.
+```{r}
+print(getres$comparisonresults)
 ```
 

@@ -18,14 +18,14 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of Modana is to ...
+The goal `Modana` package is to implement a refinement of moderation analysis with binary outcomes, as proposed by [Anto and Su (2023)](https://journals.sagepub.com/doi/abs/10.1177/09622802231151206?journalCode=smma). The function fits three models of interest: a direct model, an inverse model, and a generalized estimating equation (GEE) model. The direct and inverse models are fitted using the `glm` function to verify the symmetry property of odds ratio/relative risk in moderation analysis for the main treatment effect as well as the moderating effects. The GEE model is fitted using the `geeglm` function and is used to estimate the treatment effect accounting for within-cluster correlation. The `Modana` package has three different built functions.
 
 ## Installation
 
 You can install the development version of Modana like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+install.packages("Modana_0.1.0.tar.gz", repos = NULL)
 ```
 
 ## Example
@@ -37,18 +37,40 @@ library(Modana)
 ## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
-summary(cars)
+You can simulate some data to run moderation analysis
+```{r data}
+set.seed(1099)
+b0 <- c(1, 1.2, 1, 1.5, -2, -.5, 1.2, 1.5)
+a0 <- c(-1, 1.5, -1, 1.5)
+#a0 <- c(-2, 2, 2, 0, 1)
+b0 <- c(-1.5, 1.5, 1.5, -2, 2, -.5, -1, 1.5)
+ datt <- sim_data(n = 100, b0, a0 = NULL, binary.Xs = FALSE,
+                      sigma = 1, uniform = FALSE, c0 = 1,
+                      link.function = "logistic", rho = 0.2,
+                      observational = FALSE, trt.p = 0.5,
+                      interaction = 1:2, details = FALSE)
+head(datt)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
 
-You can also embed plots, for example:
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+The `refinedmod()` function implements refined moderation analysis to estimate both treatment effect and moderating effects associated with two logistic regression models with binary outcomes/treatment via generalized estimating equations (GEE). 
+The function first performs a role swap algorithm on the original data to obtain a clustered data of size `2` (i.e., swapping the roles of the response variable and treatment variable columns in the original data data and then stacking the resultant data on top of the original data).
+```{r analysis}
+getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
+                     detail = TRUE, y = "y",
+                    trt = "trt", data = datt,
+                     effmod = c("x1", "x2"),
+                      corstr = "independence")
+names(getres)
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+You can call each elements of listed models
+
+Mostly importantly, we can print the results of the refined estimation.
+```{r}
+print(getres$Geerefinedmodel)
+```
+
+
