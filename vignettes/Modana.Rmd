@@ -162,7 +162,7 @@ print(getres$comparisonresults)
 ### Example usage on a real-world data
 ```{r}
 #install.packages("CERFIT")
-library(CERFIT)
+require(CERFIT)
 data(warts, package =  "CERFIT")
 dat <- warts
 #data wrangling
