@@ -113,7 +113,7 @@ refinedmod <- function(formula, y = "y", trt = "trt",
                  Geerefinedmodel = out.gee,
                  out.combined = fit.gee,
                  comparisonresults = alres),
-            class = "Refinedmoderation")
+            class = "refinedmod")
 }
 
 # summary.refinedmod <- function(object, ...){
@@ -252,5 +252,6 @@ sim_data <- function(n = 100, b0, a0 = NULL, link.function = "logistic",
   }
   dat
 }
+
 
 
