@@ -157,8 +157,7 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
 #> trt:x1      -0.9294065  0.4424454 -2.100613 3.567497e-02
 #> trt:x2       1.2861794  0.5361274  2.399018 1.643911e-02
 names(getres)
-#> [1] "Directmodel"       "Inversemodel"      "Geerefinedmodel"  
-#> [4] "out.combined"      "comparisonresults"
+#> [1] "Directmodel"  "Inversemodel" "Refinedmodel"
 ```
 
 You can call each elements of listed models
@@ -166,7 +165,7 @@ You can call each elements of listed models
 Mostly importantly, we can print the results of the refined estimation.
 
 ``` r
-print(getres$Geerefinedmodel)
+print(getres$Refinedmodel)
 #>               Estimate Std. Error   z value     Pr(>|z|)
 #> (Intercept) -1.9882558  0.6313724 -3.149102 1.637732e-03
 #> trt          1.7420214  0.6742747  2.583548 9.778975e-03
@@ -187,7 +186,8 @@ Example usage on a real-world data
 
 ``` r
 #install.packages("CERFIT")
-library(CERFIT)
+require(CERFIT)
+#> Loading required package: CERFIT
 data(warts, package =  "CERFIT")
 dat <- warts
 #data wrangling
@@ -201,70 +201,7 @@ res <- refinedmod(formula = response ~ treatment + age + Time + Type,
                     trt = "treatment", data = dat,
                      effmod = c("age", "Type"),
                       corstr = "independence")
-print(res$comparisonresults)
-#> $Direct.model
-#> 
-#> Call:
-#> glm(formula = form.direct, family = binomial(link = "logit"), 
-#>     data = .SD)
-#> 
-#> Deviance Residuals: 
-#>     Min       1Q   Median       3Q      Max  
-#> -3.4483  -0.2552   0.2177   0.5278   1.8712  
-#> 
-#> Coefficients:
-#>                Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)     7.43389    1.44174   5.156 2.52e-07 ***
-#> treatment       0.59584    1.31994   0.451   0.6517    
-#> age            -0.03101    0.02545  -1.219   0.2230    
-#> Time           -0.58627    0.11036  -5.312 1.08e-07 ***
-#> Type           -0.54809    0.87790  -0.624   0.5324    
-#> treatment:age  -0.05274    0.04053  -1.301   0.1931    
-#> treatment:Type -2.84916    1.43163  -1.990   0.0466 *  
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> (Dispersion parameter for binomial family taken to be 1)
-#> 
-#>     Null deviance: 230.51  on 179  degrees of freedom
-#> Residual deviance: 119.85  on 173  degrees of freedom
-#> AIC: 133.85
-#> 
-#> Number of Fisher Scoring iterations: 6
-#> 
-#> 
-#> $Inverse.model
-#> 
-#> Call:
-#> glm(formula = form.inverse, family = binomial(link = "logit"), 
-#>     data = .SD)
-#> 
-#> Deviance Residuals: 
-#>     Min       1Q   Median       3Q      Max  
-#> -2.2753  -1.0578   0.1139   1.0293   1.9538  
-#> 
-#> Coefficients:
-#>               Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)    1.33013    1.12689   1.180 0.237861    
-#> response       1.12250    1.10380   1.017 0.309181    
-#> age           -0.00712    0.02312  -0.308 0.758123    
-#> Time          -0.09123    0.06679  -1.366 0.171959    
-#> Type           1.87854    0.70810   2.653 0.007980 ** 
-#> response:age  -0.07198    0.03264  -2.205 0.027433 *  
-#> response:Type -3.63225    0.95771  -3.793 0.000149 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> (Dispersion parameter for binomial family taken to be 1)
-#> 
-#>     Null deviance: 249.53  on 179  degrees of freedom
-#> Residual deviance: 202.03  on 173  degrees of freedom
-#> AIC: 216.03
-#> 
-#> Number of Fisher Scoring iterations: 4
-#> 
-#> 
-#> $Combinedgee.model
+print(res$Refinedmodel)
 #>                   Estimate Std. Error    z value     Pr(>|z|)
 #> (Intercept)     7.42036779 2.12457045  3.4926438 4.782640e-04
 #> treatment       0.94854255 1.09332337  0.8675773 3.856258e-01
