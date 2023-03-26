@@ -35,7 +35,7 @@ You can install the `Modana` package and use it for your moderation analysis
 install.packages("Modana_0.1.0.tar.gz", repos = NULL)
 ```
 
-```{r, warning=FALSE, echo=FALSE, message=FALSE}
+```{r, warning=FALSE, echo=FALSE, message=FALSE, eval=FALSE}
 install.packages("~/Modana_0.1.0.tar.gz", repos = NULL)
 ```
 
@@ -89,6 +89,7 @@ sim_data(n = 100, b0, a0 = NULL, link.function = "logistic",
 
 ### Example usage
 ```{r}
+#require(MASS)
 set.seed(1099)
 b0 <- c(1, 1.2, 1, 1.5, -2, -.5, 1.2, 1.5)
 a0 <- c(-1, 1.5, -1, 1.5)
@@ -144,18 +145,21 @@ If the `detail` argument is set to TRUE, the function will print summary results
 
 ### Example usage on a simulated data
 ```{r}
+#require(data.table)
+#require(geepack)
 getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
-                     detail = FALSE, y = "y",
+                     detail = TRUE, y = "y",
                     trt = "trt", data = datt,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
-summary(getres$out.combined)
+summary(getres$Refinedmodel)
 ```
 
 The refined estimates of the main treatment and effect modifiers can pulled and compared with both the direct and indirect models.
 ```{r}
-print(getres$comparisonresults)
-#plot(getres$out.combined)
+print(getres$Directmodel)
+print(getres$Refinedmodel)
+#plot(getres$Refinedmodel)
 ```
 
 
@@ -177,6 +181,7 @@ res <- refinedmod(formula = response ~ treatment + age + Time + Type,
                     trt = "treatment", data = dat,
                      effmod = c("age", "Type"),
                       corstr = "independence")
-print(res$comparisonresults)
+summary(res$Directmodel)
+summary(res$Refinedmodel)
 ```
 

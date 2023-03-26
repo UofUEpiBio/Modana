@@ -71,14 +71,14 @@ You can call each elements of listed models
 
 Mostly importantly, we can print the results of the refined estimation.
 ```{r}
-print(getres$Geerefinedmodel)
+print(getres$Refinedmodel)
 ```
 
 
 Example usage on a real-world data
 ```{r}
 #install.packages("CERFIT")
-library(CERFIT)
+require(CERFIT)
 data(warts, package =  "CERFIT")
 dat <- warts
 #data wrangling
@@ -93,5 +93,5 @@ res <- refinedmod(formula = response ~ treatment + age + Time + Type,
                     trt = "treatment", data = dat,
                      effmod = c("age", "Type"),
                       corstr = "independence")
-print(res$comparisonresults)
+print(res$Refinedmodel)
 ```

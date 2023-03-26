@@ -4,6 +4,9 @@
 \alias{refinedmod}
 \alias{swaparr}
 \alias{sim_data}
+\alias{summary.refinedmod}
+\alias{print.refinedmod}
+\alias{plot.refined}
 \title{Refined moderation Analysis with binary outcomes}
 \usage{
 refinedmod(
@@ -33,6 +36,12 @@ sim_data(
   interaction = NULL,
   details = F
 )
+
+\method{summary}{refinedmod}(object, ...)
+
+\method{print}{refinedmod}(x, ...)
+
+\method{plot}{refined}(x, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
@@ -47,7 +56,7 @@ sim_data(
 
 \item{detail}{a logical argument specified to print summary results of the direct and inverse models}
 
-\item{...}{Other arguments, which are passed to the functions in \code{\link[geepack:geeglm]{geeglm}}.}
+\item{...}{other argument not in use at the moment}
 
 \item{n}{the number of observations to generate.}
 
@@ -74,6 +83,10 @@ sim_data(
 \item{interaction}{a vector of indices indicating which covariates should be used to create interaction terms with the treatment variable. The length of interaction should be less than or equal to the number of covariates. The default value is `NULL`, which indicates no interaction terms should be used.}
 
 \item{details}{a logical value indicating whether to print details about the generated data. The default value is FALSE.}
+
+\item{object}{an object class of \code{refinedmod}}
+
+\item{x}{an object class of \code{refinedmod}}
 }
 \value{
 An object of type \code{glm} and \code{geeglm}.
@@ -106,11 +119,15 @@ datt <- sim_data(n = 100, b0, a0 = NULL, binary.Xs = FALSE,
                    interaction = 1:2, details = FALSE)
 
 getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
-                     detail = TRUE, y = "y",
+                     detail = FALSE, y = "y",
                     trt = "trt", data = datt,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
-print(getres$comparisonresults)
+names(getres)
+print(getres$Refinedmodel)
+summary(getres$Refinedmodel)
+summary(getres$Directmodel)
+#plot(getres$Directmodel)
 }
 \references{
 \href{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}

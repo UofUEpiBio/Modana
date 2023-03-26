@@ -10,6 +10,13 @@
 #' @importFrom data.table .NGRP
 #' @importFrom data.table .SD
 #' @importFrom data.table :=
+#' @importFrom data.table setDT
 #' @importFrom data.table data.table
+#' @importFrom MASS mvrnorm
+#' @importFrom geepack geeglm
+#' @importFrom stats binomial 
+#' @importFrom stats rbinom
+#' @importFrom utils head
+#' @importFrom stats rbinom glm as.formula pnorm
 ## usethis namespace: end
 NULL

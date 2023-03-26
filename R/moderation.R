@@ -29,11 +29,15 @@
 #'                    interaction = 1:2, details = FALSE)
 #'
 #' getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
-#'                      detail = TRUE, y = "y",
+#'                      detail = FALSE, y = "y",
 #'                     trt = "trt", data = datt,
 #'                      effmod = c("x1", "x2"),
 #'                       corstr = "independence")
-#' print(getres$comparisonresults)
+#' names(getres)
+#' print(getres$Refinedmodel)
+#' summary(getres$Refinedmodel)
+#' summary(getres$Directmodel)
+#' #plot(getres$Directmodel)
 #' @export
 refinedmod <- function(formula, y = "y", trt = "trt",
                        effmod = NULL, data, detail = FALSE, ...){
@@ -48,22 +52,22 @@ refinedmod <- function(formula, y = "y", trt = "trt",
   covars <- c(trt, covar)
   covars.inv <- c(y, covar)
   if(is.null(effmod)){
-    form.gee <- stats::as.formula(paste(y, "~",  trt, "+(",
+    form.gee <- as.formula(paste(y, "~",  trt, "+(",
                                  paste0(covar, sep = "", collapse = "+"),")*z"))
-    form.inverse <- stats::as.formula(paste(trt, "~",
+    form.inverse <- as.formula(paste(trt, "~",
                                      paste0(covars.inv, sep = "", collapse = "+")))
-    form.direct <- stats::as.formula(paste(y, "~",
+    form.direct <- as.formula(paste(y, "~",
                                     paste0(covars, sep = "", collapse = "+")))
   } else{
-    form.gee <- stats::as.formula(paste(y, "~",  trt, "+(",
+    form.gee <- as.formula(paste(y, "~",  trt, "+(",
                                  paste0(covar, sep = "", collapse = "+"),")*z +(",
                                  paste0(effmod, sep = "", collapse = "+"),"):",trt))
 
-    form.inverse <- stats::as.formula(paste(trt, "~",
+    form.inverse <- as.formula(paste(trt, "~",
                                      paste0(covars.inv, sep = "", collapse = "+"), "+(",
                                      paste0(effmod, sep = "", collapse = "+"),"):", y))
 
-    form.direct <- stats::as.formula(paste(y, "~",
+    form.direct <- as.formula(paste(y, "~",
                                     paste0(covars, sep = "", collapse = "+"), "+(",
                                     paste0(effmod, sep = "", collapse = "+"),"):", trt))
   }
@@ -95,7 +99,7 @@ refinedmod <- function(formula, y = "y", trt = "trt",
   out.gee <- summary(fit.gee)$coefficients
   #names(result.gee)
   out.gee$Wald <- (out.gee$Estimate)/(out.gee$Std.err )
-  out.gee$'Pr(>|W|)' <- 2*pnorm (-abs(out.gee$Wald ))
+  out.gee$'Pr(>|W|)' <- 2*pnorm(-abs(out.gee$Wald ))
 
   names(out.gee)[names(out.gee) == "Wald"] <- "z value"
   names(out.gee)[names(out.gee) == "Pr(>|W|)"] <- "Pr(>|z|)"
@@ -105,20 +109,14 @@ refinedmod <- function(formula, y = "y", trt = "trt",
     cat("=================================================================\n")
     print(out.gee)
   }
-  alres <- list(Direct.model = summary(fit.direct),
-                Inverse.model = summary(fit.inverse),
-                Combinedgee.model = out.gee)
+  # alres <- list(Direct.model = summary(fit.direct),
+  #               Inverse.model = summary(fit.inverse),
+  #               Combinedgee.model = out.gee)
   structure(list(Directmodel  = fit.direct,
                  Inversemodel = fit.inverse,
-                 Geerefinedmodel = out.gee,
-                 out.combined = fit.gee,
-                 comparisonresults = alres),
+                 Refinedmodel = out.gee),
             class = "refinedmod")
 }
-
-# summary.refinedmod <- function(object, ...){
-#
-# }
 
 
 #' @rdname refinedmod
@@ -200,10 +198,10 @@ sim_data <- function(n = 100, b0, a0 = NULL, link.function = "logistic",
       sigma^2*rho^(abs(i-j))})})
 
   # Generate X
-  # X <- draw.d.variate.uniform(no.row = n, d = p, cov.mat = S)
+  #X <- draw.d.variate.uniform(no.row = n, d = p, cov.mat = S)
   mu <- rep(0, p)
   X <- MASS::mvrnorm(n = n, mu = mu, Sigma = S)
-  if (uniform) X <- stats::pnorm(X)*c0 	# PROB INTEGRAL TRANSFORM TO UNIFORM [0,c0]
+  if (uniform) X <- pnorm(X)*c0 	# PROB INTEGRAL TRANSFORM TO UNIFORM [0,c0]
   # CHANGE SOME COLUMNS OF X INTO BINARY
   if(binary.Xs){
     threshold <- ifelse(uniform, c0/2, 0);
@@ -248,10 +246,54 @@ sim_data <- function(n = 100, b0, a0 = NULL, link.function = "logistic",
   if (!is.null(interaction)) {
     datint <- cbind(dat, X_int*trt)
     colnames(datint)[(p+3):(p+(2+length(interaction)))] <- paste0("z", 1:length(interaction))
-    if(details) print(utils::head(datint))
+    if(details) print(head(datint))
   }
   dat
 }
 
+#' @rdname refinedmod
+#' @export
+#' @param object an object class of \code{refinedmod}
+#' @param ... other argument not in use at the moment 
+summary.refinedmod <- function(object, ...){
+  # if(any(colnames(summary(object)$coefficients)=="Wald")){
+  # out <- summary(object)$coefficients
+  # out$Wald <- (out$Estimate)/(out$Std.err)
+  # out$'Pr(>|W|)' <- 2*pnorm(-abs(out$Wald))
+  # names(out)[names(out) == "Wald"] <- "z value"
+  # names(out)[names(out) == "Pr(>|W|)"] <- "Pr(>|z|)"
+  # names(out)[names(out) == "Std.err"]  <- "Std. Error"
+  # }else{
+  # out <- object
+  # }
+  # return(out)
+  object
+}
 
+
+#' @rdname refinedmod
+#' @export
+#' @param x an object class of \code{refinedmod}
+#' @param ... other argument not in use at the moment 
+print.refinedmod <- function(x, ...){
+  if(any(colnames(summary(object)$coefficients)=="Wald")){
+    out <- summary(object)$coefficients
+    out$Wald <- (out$Estimate)/(out$Std.err)
+    out$'Pr(>|W|)' <- 2*pnorm(-abs(out$Wald))
+    names(out)[names(out) == "Wald"] <- "z value"
+    names(out)[names(out) == "Pr(>|W|)"] <- "Pr(>|z|)"
+    names(out)[names(out) == "Std.err"]  <- "Std. Error"
+  }else{
+    out <- object
+  }
+  return(out)
+}
+
+#' @rdname refinedmod
+#' @export
+#' @param x an object class of \code{refinedmod}
+#' @param ... other argument not in use at the moment
+plot.refined <- function(x, ...){
+  x
+}
 
