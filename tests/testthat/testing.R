@@ -1,6 +1,9 @@
 test_that("Testing the number of objects in my output", {
   a0 <- c(-2, 2, 2, 0, 1)
   b0 <- c(-1, 0.5, 0.5, -1, .5, -0.5, 1, 0, .5)
+
+#  source("~/Modana/Modana/R/moderation.R") #<- [GEORGE]: Is this OK?
+
   datt <- sim_data(n = 100, b0, a0 = NULL, binary.Xs = FALSE,
                    sigma = 1, uniform = FALSE, c0 = 1,
                    link.function = "logistic", rho = 0.2,
