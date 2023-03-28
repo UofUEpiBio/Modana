@@ -35,8 +35,8 @@
 #'                       corstr = "independence")
 #' names(getres)
 #' print(getres$Refinedmodel)
-#' summary(getres$Refinedmodel)
-#' summary(getres$Directmodel)
+#' dsu <- summary(getres, 1); dsu
+#' summary(getres, model = NULL)
 #' #plot(getres$Directmodel)
 #' @export
 refinedmod <- function(formula, y = "y", trt = "trt",
@@ -94,7 +94,6 @@ refinedmod <- function(formula, y = "y", trt = "trt",
     print(summary(fit.inverse))
   }
   out.direct <- summary(fit.direct)$"coefficients"
-  out.direct <- summary(fit.direct)$"coefficients"
   out.inverse <- summary(fit.inverse)$"coefficients"
   out.gee <- summary(fit.gee)$coefficients
   #names(result.gee)
@@ -112,9 +111,13 @@ refinedmod <- function(formula, y = "y", trt = "trt",
   # alres <- list(Direct.model = summary(fit.direct),
   #               Inverse.model = summary(fit.inverse),
   #               Combinedgee.model = out.gee)
-  structure(list(Directmodel  = fit.direct,
-                 Inversemodel = fit.inverse,
-                 Refinedmodel = out.gee),
+  structure(list(
+    allsummary.coef = list(out.direct    = out.direct,
+                  out.inverse   = out.inverse,
+                  out.gee   = out.gee),
+    Directmodel  = fit.direct,
+    Inversemodel = fit.inverse,
+    Refinedmodel = out.gee),
             class = "refinedmod")
 }
 
@@ -254,8 +257,9 @@ sim_data <- function(n = 100, b0, a0 = NULL, link.function = "logistic",
 #' @rdname refinedmod
 #' @export
 #' @param object an object class of \code{refinedmod}
+#' @param model index indicating the summary call to print
 #' @param ... other argument not in use at the moment 
-summary.refinedmod <- function(object, ...){
+summary.refinedmod <- function(object, model = NULL, ...){
   # if(any(colnames(summary(object)$coefficients)=="Wald")){
   # out <- summary(object)$coefficients
   # out$Wald <- (out$Estimate)/(out$Std.err)
@@ -267,7 +271,25 @@ summary.refinedmod <- function(object, ...){
   # out <- object
   # }
   # return(out)
-  object
+                if(!is.null(model)){
+                if(model==1){
+                out <- capture.output(object[["allsummary.coef"]][["out.direct"]])
+                v <- c("Model summary of the direct estimation:", out, "\n") # char vec
+                s <- paste(v, collapse = "\n") # single string
+                }else if(model == 2){
+                  out <- capture.output(object[["allsummary.coef"]][["out.inverse"]])
+                  v <- c("Model summary of the inverse estimation:", out, "\n") # char vec
+                  s <- paste(v, collapse = "\n") # single string
+                }else{
+                  out <- capture.output(object[["allsummary.coef"]])
+                  v <- c("Model summary of the direct, inverse and inverse estimation:", out, "\n") # char vec
+                  s <- paste(v, collapse = "\n")}
+                }else{
+                  out <- capture.output(object[["allsummary.coef"]][["out.gee"]])
+                  v <- c("Model summary of the refined GEE estimation:", out, "\n") # char vec
+                  s <- paste(v, collapse = "\n") # single string
+                }
+            return(noquote(capture.output(writeLines(s))))
 }
 
 

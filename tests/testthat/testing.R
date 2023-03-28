@@ -13,6 +13,6 @@ test_that("Testing the number of objects in my output", {
                        detail = TRUE, y = "y", trt = "trt",
                        data = datt, effmod = c("x1", "x2"),
                        corstr = "independence")
-  expect_equal(length(getres), 3)
+  expect_equal(length(getres), 4)
 })
 

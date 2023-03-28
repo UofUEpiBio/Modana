@@ -148,7 +148,7 @@ If the `detail` argument is set to TRUE, the function will print summary results
 #require(data.table)
 #require(geepack)
 getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
-                     detail = TRUE, y = "y",
+                     detail = FALSE, y = "y",
                     trt = "trt", data = datt,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
@@ -157,8 +157,8 @@ summary(getres$Refinedmodel)
 
 The refined estimates of the main treatment and effect modifiers can pulled and compared with both the direct and indirect models.
 ```{r}
-print(getres$Directmodel)
 print(getres$Refinedmodel)
+summary(getres, 4)
 #plot(getres$Refinedmodel)
 ```
 
@@ -181,7 +181,7 @@ res <- refinedmod(formula = response ~ treatment + age + Time + Type,
                     trt = "treatment", data = dat,
                      effmod = c("age", "Type"),
                       corstr = "independence")
-summary(res$Directmodel)
-summary(res$Refinedmodel)
+
+summary(res)
 ```
 

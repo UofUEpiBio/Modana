@@ -93,5 +93,5 @@ res <- refinedmod(formula = response ~ treatment + age + Time + Type,
                     trt = "treatment", data = dat,
                      effmod = c("age", "Type"),
                       corstr = "independence")
-print(res$Refinedmodel)
+summary(res, 4)
 ```

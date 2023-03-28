@@ -37,7 +37,7 @@ sim_data(
   details = F
 )
 
-\method{summary}{refinedmod}(object, ...)
+\method{summary}{refinedmod}(object, model = NULL, ...)
 
 \method{print}{refinedmod}(x, ...)
 
@@ -86,6 +86,8 @@ sim_data(
 
 \item{object}{an object class of \code{refinedmod}}
 
+\item{model}{index indicating the summary call to print}
+
 \item{x}{an object class of \code{refinedmod}}
 }
 \value{
@@ -125,8 +127,8 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                       corstr = "independence")
 names(getres)
 print(getres$Refinedmodel)
-summary(getres$Refinedmodel)
-summary(getres$Directmodel)
+dsu <- summary(getres, 1); dsu
+summary(getres, model = NULL)
 #plot(getres$Directmodel)
 }
 \references{
