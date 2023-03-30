@@ -62,8 +62,8 @@ head(datt)
 ```
 
 The `refinedmod()` function implements refined moderation analysis to
-estimate both treatment effect and moderating effects associated with
-two logistic regression models with binary outcomes/treatment via
+estimate both main treatment effect and moderating effects associated
+with two logistic regression models with binary outcomes/treatment via
 generalized estimating equations (GEE). The function first performs a
 role swap algorithm on the original data to obtain a clustered data of
 size `2` (i.e., swapping the roles of the response variable and
@@ -157,7 +157,47 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
 #> trt:x1      -0.9294065  0.4424454 -2.100613 3.567497e-02
 #> trt:x2       1.2861794  0.5361274  2.399018 1.643911e-02
 names(getres)
-#> [1] "allsummary.coef" "Directmodel"     "Inversemodel"    "Refinedmodel"
+#> [1] "allsummary.coef" "Directmodel"     "Inversemodel"    "Refinedmodel"   
+#> [5] "pltdata"
+summary(getres, 4)
+#> Model summary of the direct, inverse and inverse estimation:
+#> $out.direct
+#>              Estimate Std. Error   z value     Pr(>|z|)
+#> (Intercept) -2.141103  0.6469410 -3.309579 9.343624e-04
+#> trt          1.906338  0.7249114  2.629753 8.544700e-03
+#> x1           1.659156  0.6746465  2.459296 1.392097e-02
+#> x2          -2.389839  0.6830095 -3.498984 4.670340e-04
+#> x3           2.439921  0.5453335  4.474182 7.670454e-06
+#> x4          -0.381040  0.2994330 -1.272538 2.031819e-01
+#> trt:x1      -1.609422  0.7476922 -2.152519 3.135650e-02
+#> trt:x2       1.493800  0.7739598  1.930075 5.359757e-02
+#> 
+#> $out.inverse
+#>               Estimate Std. Error    z value   Pr(>|z|)
+#> (Intercept) -0.3215810  0.3075437 -1.0456432 0.29572582
+#> y            1.6005048  0.6343528  2.5230515 0.01163414
+#> x1           0.1812059  0.2571344  0.7047126 0.48098911
+#> x2          -0.2928971  0.3610304 -0.8112808 0.41720442
+#> x3          -0.2797805  0.3028536 -0.9238145 0.35558289
+#> x4           0.4367291  0.2297411  1.9009620 0.05730699
+#> y:x1        -0.6431931  0.4373363 -1.4707059 0.14137067
+#> y:x2         1.2297949  0.5382257  2.2849058 0.02231835
+#> 
+#> $out.gee
+#>               Estimate Std. Error   z value     Pr(>|z|)
+#> (Intercept) -1.9882558  0.6313724 -3.149102 1.637732e-03
+#> trt          1.7420214  0.6742747  2.583548 9.778975e-03
+#> x1           1.1263252  0.3902621  2.886073 3.900812e-03
+#> x2          -2.1327750  0.4347750 -4.905468 9.320477e-07
+#> x3           2.2584618  0.4912020  4.597827 4.269210e-06
+#> x4          -0.4006063  0.2991221 -1.339273 1.804817e-01
+#> z            1.6338187  0.5822168  2.806203 5.012902e-03
+#> x1:z        -0.8611383  0.3730072 -2.308637 2.096371e-02
+#> x2:z         1.8597407  0.4994187  3.723811 1.962380e-04
+#> x3:z        -2.5671182  0.6832798 -3.757053 1.719264e-04
+#> x4:z         0.8363693  0.3954295  2.115091 3.442221e-02
+#> trt:x1      -0.9294065  0.4424454 -2.100613 3.567497e-02
+#> trt:x2       1.2861794  0.5361274  2.399018 1.643911e-02
 ```
 
 You can call each elements of listed models
@@ -165,7 +205,7 @@ You can call each elements of listed models
 Mostly importantly, we can print the results of the refined estimation.
 
 ``` r
-print(getres$Refinedmodel)
+print(getres)
 #>               Estimate Std. Error   z value     Pr(>|z|)
 #> (Intercept) -1.9882558  0.6313724 -3.149102 1.637732e-03
 #> trt          1.7420214  0.6742747  2.583548 9.778975e-03
@@ -185,58 +225,58 @@ print(getres$Refinedmodel)
 Example usage on a real-world data
 
 ``` r
-#install.packages("CERFIT")
-require(CERFIT)
-#> Loading required package: CERFIT
-data(warts, package =  "CERFIT")
-dat <- warts
+data(Warts, package = "Modana")
+dat <- Warts
 #data wrangling
-dat$Type <- ifelse(dat$Type==3, 1, 0)
-dat$response <- dat$Result_of_Treatment
+dat$type <- ifelse(dat$type == 3, 1, 0)
 ```
 
 ``` r
-res <- refinedmod(formula = response ~ treatment + age + Time + Type,
+res <- refinedmod(formula = response ~ cryo + age + time + type,
                      detail = FALSE, y = "response",
-                    trt = "treatment", data = dat,
-                     effmod = c("age", "Type"),
+                    trt = "cryo", data = dat,
+                     effmod = c("age", "type"),
                       corstr = "independence")
+
 summary(res, 4)
-#>  [1] Model summary of the direct, inverse and inverse estimation: 
-#>  [2] $out.direct                                                  
-#>  [3]                   Estimate Std. Error    z value     Pr(>|z|)
-#>  [4] (Intercept)     7.43389234 1.44174216  5.1561871 2.520291e-07
-#>  [5] treatment       0.59583647 1.31994245  0.4514109 6.516934e-01
-#>  [6] age            -0.03101099 0.02544718 -1.2186414 2.229803e-01
-#>  [7] Time           -0.58626540 0.11036007 -5.3122965 1.082523e-07
-#>  [8] Type           -0.54809045 0.87790128 -0.6243190 5.324181e-01
-#>  [9] treatment:age  -0.05274381 0.04052874 -1.3013930 1.931240e-01
-#> [10] treatment:Type -2.84915648 1.43163124 -1.9901469 4.657476e-02
-#> [11]                                                              
-#> [12] $out.inverse                                                 
-#> [13]                   Estimate Std. Error   z value    Pr(>|z|)  
-#> [14] (Intercept)    1.330124634 1.12688939  1.180351 0.237860775  
-#> [15] response       1.122502722 1.10380267  1.016941 0.309181269  
-#> [16] age           -0.007120097 0.02312125 -0.307946 0.758123388  
-#> [17] Time          -0.091230920 0.06679007 -1.365935 0.171959267  
-#> [18] Type           1.878541061 0.70810373  2.652918 0.007979928  
-#> [19] response:age  -0.071976045 0.03263765 -2.205307 0.027432563  
-#> [20] response:Type -3.632251469 0.95771302 -3.792630 0.000149060  
-#> [21]                                                              
-#> [22] $out.gee                                                     
-#> [23]                   Estimate Std. Error    z value     Pr(>|z|)
-#> [24] (Intercept)     7.42036779 2.12457045  3.4926438 4.782640e-04
-#> [25] treatment       0.94854255 1.09332337  0.8675773 3.856258e-01
-#> [26] age            -0.02664027 0.02350883 -1.1332029 2.571291e-01
-#> [27] Time           -0.60056451 0.16830032 -3.5684098 3.591544e-04
-#> [28] Type           -0.35357228 0.91818191 -0.3850787 7.001791e-01
-#> [29] z              -6.07463142 1.39817721 -4.3446792 1.394794e-05
-#> [30] age:z           0.01717663 0.02031301  0.8455974 3.977774e-01
-#> [31] Time:z          0.51570766 0.13299353  3.8776897 1.054531e-04
-#> [32] Type:z          2.13458124 0.65420080  3.2628839 1.102847e-03
-#> [33] treatment:age  -0.06485767 0.03032095 -2.1390378 3.243260e-02
-#> [34] treatment:Type -3.40781554 0.91201807 -3.7365658 1.865506e-04
-#> [35]                                                              
-#> [36]                                                              
-#> [37]
+#> Model summary of the direct, inverse and inverse estimation:
+#> $out.direct
+#>                Estimate Std. Error    z value     Pr(>|z|)
+#> (Intercept)  7.43389234 1.44174216  5.1561871 2.520291e-07
+#> cryo         0.59583647 1.31994245  0.4514109 6.516934e-01
+#> age         -0.03101099 0.02544718 -1.2186414 2.229803e-01
+#> time        -0.58626540 0.11036007 -5.3122965 1.082523e-07
+#> type        -0.54809045 0.87790128 -0.6243190 5.324181e-01
+#> cryo:age    -0.05274381 0.04052874 -1.3013930 1.931240e-01
+#> cryo:type   -2.84915648 1.43163124 -1.9901469 4.657476e-02
+#> 
+#> $out.inverse
+#>                   Estimate Std. Error   z value    Pr(>|z|)
+#> (Intercept)    1.330124634 1.12688939  1.180351 0.237860775
+#> response       1.122502722 1.10380267  1.016941 0.309181269
+#> age           -0.007120097 0.02312125 -0.307946 0.758123388
+#> time          -0.091230920 0.06679007 -1.365935 0.171959267
+#> type           1.878541061 0.70810373  2.652918 0.007979928
+#> response:age  -0.071976045 0.03263765 -2.205307 0.027432563
+#> response:type -3.632251469 0.95771302 -3.792630 0.000149060
+#> 
+#> $out.gee
+#>                Estimate Std. Error    z value     Pr(>|z|)
+#> (Intercept)  7.42036779 2.12457045  3.4926438 4.782640e-04
+#> cryo         0.94854255 1.09332337  0.8675773 3.856258e-01
+#> age         -0.02664027 0.02350883 -1.1332029 2.571291e-01
+#> time        -0.60056451 0.16830032 -3.5684098 3.591544e-04
+#> type        -0.35357228 0.91818191 -0.3850787 7.001791e-01
+#> z           -6.07463142 1.39817721 -4.3446792 1.394794e-05
+#> age:z        0.01717663 0.02031301  0.8455974 3.977774e-01
+#> time:z       0.51570766 0.13299353  3.8776897 1.054531e-04
+#> type:z       2.13458124 0.65420080  3.2628839 1.102847e-03
+#> cryo:age    -0.06485767 0.03032095 -2.1390378 3.243260e-02
+#> cryo:type   -3.40781554 0.91201807 -3.7365658 1.865506e-04
 ```
+
+``` r
+plot(res)
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />

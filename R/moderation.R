@@ -34,10 +34,10 @@
 #'                      effmod = c("x1", "x2"),
 #'                       corstr = "independence")
 #' names(getres)
-#' print(getres$Refinedmodel)
+#' print(getres)
 #' dsu <- summary(getres, 1); dsu
 #' summary(getres, model = NULL)
-#' #plot(getres$Directmodel)
+#' plot(getres)
 #' @export
 refinedmod <- function(formula, y = "y", trt = "trt",
                        effmod = NULL, data, detail = FALSE, ...){
@@ -111,14 +111,35 @@ refinedmod <- function(formula, y = "y", trt = "trt",
   # alres <- list(Direct.model = summary(fit.direct),
   #               Inverse.model = summary(fit.inverse),
   #               Combinedgee.model = out.gee)
+  
+  pred.direct<- as.vector(stats::predict(fit.direct, type = "response"))
+  pred.inverse <- as.vector(stats::predict(fit.inverse, type = "response"))
+  pred.gee <- as.vector(stats::predict(fit.gee, type = "response"))
+  resid.direct <- as.vector(fit.direct$residuals)
+  resid.inverse <- as.vector(fit.inverse$residuals)
+  resid.gee <- as.vector(fit.gee$residuals)
+  pltdata <- rbind.data.frame(cbind(pred = pred.gee,
+                              residual = resid.gee,
+                              model = "gee"),
+                              cbind(pred = pred.direct,
+                              residual = resid.direct,
+                              model = "direct"),
+                              cbind(pred = pred.inverse,
+                              residual = resid.inverse,
+                              model = "inverse")
+                              )
+  pltdata$pred<-as.numeric(as.character(pltdata$pred))
+  pltdata$residual<-as.numeric(as.character(pltdata$residual))
   structure(list(
-    allsummary.coef = list(out.direct    = out.direct,
-                  out.inverse   = out.inverse,
-                  out.gee   = out.gee),
+    allsummary.coef = 
+    list(out.direct = out.direct,
+          out.inverse = out.inverse,
+          out.gee   = out.gee),
     Directmodel  = fit.direct,
     Inversemodel = fit.inverse,
-    Refinedmodel = out.gee),
-            class = "refinedmod")
+    Refinedmodel = fit.gee,
+    pltdata = pltdata),
+    class = "refinedmod")
 }
 
 
@@ -260,17 +281,6 @@ sim_data <- function(n = 100, b0, a0 = NULL, link.function = "logistic",
 #' @param model index indicating the summary call to print
 #' @param ... other argument not in use at the moment 
 summary.refinedmod <- function(object, model = NULL, ...){
-  # if(any(colnames(summary(object)$coefficients)=="Wald")){
-  # out <- summary(object)$coefficients
-  # out$Wald <- (out$Estimate)/(out$Std.err)
-  # out$'Pr(>|W|)' <- 2*pnorm(-abs(out$Wald))
-  # names(out)[names(out) == "Wald"] <- "z value"
-  # names(out)[names(out) == "Pr(>|W|)"] <- "Pr(>|z|)"
-  # names(out)[names(out) == "Std.err"]  <- "Std. Error"
-  # }else{
-  # out <- object
-  # }
-  # return(out)
                 if(!is.null(model)){
                 if(model==1){
                 out <- capture.output(object[["allsummary.coef"]][["out.direct"]])
@@ -289,33 +299,43 @@ summary.refinedmod <- function(object, model = NULL, ...){
                   v <- c("Model summary of the refined GEE estimation:", out, "\n") # char vec
                   s <- paste(v, collapse = "\n") # single string
                 }
-            return(noquote(capture.output(writeLines(s))))
+             # cat(s)
+            structure(s, class = "modana_summary")
 }
 
+#' @export
+print.modana_summary <- function(x,...) {
+  cat(x)
+  invisible(x)
+}
 
 #' @rdname refinedmod
 #' @export
 #' @param x an object class of \code{refinedmod}
 #' @param ... other argument not in use at the moment 
 print.refinedmod <- function(x, ...){
-  if(any(colnames(summary(object)$coefficients)=="Wald")){
-    out <- summary(object)$coefficients
+  #if(any(colnames(summary(x)$coefficients)=="Wald"))
+    out <- summary(x[["Refinedmodel"]])$coefficients
     out$Wald <- (out$Estimate)/(out$Std.err)
     out$'Pr(>|W|)' <- 2*pnorm(-abs(out$Wald))
     names(out)[names(out) == "Wald"] <- "z value"
     names(out)[names(out) == "Pr(>|W|)"] <- "Pr(>|z|)"
     names(out)[names(out) == "Std.err"]  <- "Std. Error"
-  }else{
-    out <- object
-  }
-  return(out)
+    return(out)
+  #invisible(x)
 }
 
 #' @rdname refinedmod
-#' @export
 #' @param x an object class of \code{refinedmod}
-#' @param ... other argument not in use at the moment
-plot.refined <- function(x, ...){
-  x
+#' @param ... Other arguments, which are passed to the functions in \code{ggplot2}.
+##@param y not in use at the moment
+#' @export
+plot.refinedmod <- function(x, ...){
+  plotdata <- x[["pltdata"]]
+ pl <- ggplot2::ggplot(plotdata, ggplot2::aes(pred, residual)) + 
+   ggplot2::labs(x = "Fitted values", y = "Residuals") +
+    ggplot2::geom_point() + ggplot2::facet_wrap(~model)
+ pl
 }
+
 

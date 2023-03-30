@@ -56,8 +56,9 @@ head(datt)
 
 
 
-The `refinedmod()` function implements refined moderation analysis to estimate both treatment effect and moderating effects associated with two logistic regression models with binary outcomes/treatment via generalized estimating equations (GEE). 
+The `refinedmod()` function implements refined moderation analysis to estimate both main treatment effect and moderating effects associated with two logistic regression models with binary outcomes/treatment via generalized estimating equations (GEE). 
 The function first performs a role swap algorithm on the original data to obtain a clustered data of size `2` (i.e., swapping the roles of the response variable and treatment variable columns in the original data data and then stacking the resultant data on top of the original data).
+
 ```{r analysis}
 getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                      detail = TRUE, y = "y",
@@ -65,33 +66,36 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
 names(getres)
+summary(getres, 4)
 ```
 
 You can call each elements of listed models
 
 Mostly importantly, we can print the results of the refined estimation.
 ```{r}
-print(getres$Refinedmodel)
+print(getres)
 ```
 
 
 Example usage on a real-world data
 ```{r}
-#install.packages("CERFIT")
-require(CERFIT)
-data(warts, package =  "CERFIT")
-dat <- warts
+data(Warts, package = "Modana")
+dat <- Warts
 #data wrangling
-dat$Type <- ifelse(dat$Type==3, 1, 0)
-dat$response <- dat$Result_of_Treatment
+dat$type <- ifelse(dat$type == 3, 1, 0)
 ```
 
 
 ```{r}
-res <- refinedmod(formula = response ~ treatment + age + Time + Type,
+res <- refinedmod(formula = response ~ cryo + age + time + type,
                      detail = FALSE, y = "response",
-                    trt = "treatment", data = dat,
-                     effmod = c("age", "Type"),
+                    trt = "cryo", data = dat,
+                     effmod = c("age", "type"),
                       corstr = "independence")
+
 summary(res, 4)
 ```
+```{r}
+plot(res)
+```
+

@@ -6,7 +6,7 @@
 \alias{sim_data}
 \alias{summary.refinedmod}
 \alias{print.refinedmod}
-\alias{plot.refined}
+\alias{plot.refinedmod}
 \title{Refined moderation Analysis with binary outcomes}
 \usage{
 refinedmod(
@@ -41,7 +41,7 @@ sim_data(
 
 \method{print}{refinedmod}(x, ...)
 
-\method{plot}{refined}(x, ...)
+\method{plot}{refinedmod}(x, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
@@ -56,7 +56,7 @@ sim_data(
 
 \item{detail}{a logical argument specified to print summary results of the direct and inverse models}
 
-\item{...}{other argument not in use at the moment}
+\item{...}{Other arguments, which are passed to the functions in \code{ggplot2}.}
 
 \item{n}{the number of observations to generate.}
 
@@ -126,10 +126,10 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
 names(getres)
-print(getres$Refinedmodel)
+print(getres)
 dsu <- summary(getres, 1); dsu
 summary(getres, model = NULL)
-#plot(getres$Directmodel)
+plot(getres)
 }
 \references{
 \href{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}

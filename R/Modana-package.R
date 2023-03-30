@@ -18,5 +18,7 @@
 #' @importFrom stats rbinom
 #' @importFrom utils head
 #' @importFrom stats rbinom glm as.formula pnorm
+#' @importFrom ggplot2 aes ggplot geom_point
+#' @importFrom utils capture.output
 ## usethis namespace: end
 NULL
