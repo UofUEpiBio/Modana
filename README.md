@@ -25,7 +25,7 @@ package has three different built functions.
 You can install the development version of Modana like so:
 
 ``` r
-install.packages("Modana_0.1.0.tar.gz", repos = NULL)
+devtools::install_github("Quamena/Modana")
 ```
 
 ## Example
@@ -156,9 +156,7 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
 #> x4:z         0.8363693  0.3954295  2.115091 3.442221e-02
 #> trt:x1      -0.9294065  0.4424454 -2.100613 3.567497e-02
 #> trt:x2       1.2861794  0.5361274  2.399018 1.643911e-02
-names(getres)
-#> [1] "allsummary.coef" "Directmodel"     "Inversemodel"    "Refinedmodel"   
-#> [5] "pltdata"
+#names(getres)
 summary(getres, 4)
 #> Model summary of the direct, inverse and inverse estimation:
 #> $out.direct

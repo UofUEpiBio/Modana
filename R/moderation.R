@@ -22,7 +22,7 @@
 #' set.seed(1001)
 #' b0 <- c(-1.5, 1.5, 1.5, -2, 2, -.5, 2, 1.5)
 #' a0 <- c(-1, 1.5, -1, 1.5)
-#' datt <- sim_data(n = 100, b0, a0 = NULL, binary.Xs = FALSE,
+#' datt <- sim_data(n = 100, b0 = b0, a0 = NULL, binary.Xs = FALSE,
 #'                   sigma = 1, uniform = FALSE, c0 = 1,
 #'                    link.function = "logistic", rho = 0.2,
 #'                    observational = FALSE, trt.p = 0.5,
@@ -235,7 +235,7 @@ sim_data <- function(n = 100, b0, a0 = NULL, link.function = "logistic",
   if (observational) {
     if (is.null(a0)) stop("Observational study requires specifying a0.")
     if (length(a0) != (p + 1)) stop("Length of a0 must be consistent with b0 (i.e. length of a0 should be equal to ", paste(sum(p+1)))
-    eta.trt <- as.vector(cbind(1, X) %*% a0)
+    eta.trt <- as.vector(cbind(1, X)%*% a0)
     pi.trt <- (tanh(eta.trt/2)+1)/2
     trt <- stats::rbinom(n = n, size = 1, prob = pi.trt)
     if (details) print(cbind(p.treatment = mean(pi.trt), p.trt = mean(trt)))

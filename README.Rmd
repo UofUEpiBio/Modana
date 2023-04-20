@@ -26,7 +26,7 @@ The goal of the `Modana` package is to implement a refinement of moderation anal
 You can install the development version of Modana like so:
 
 ``` r
-install.packages("Modana_0.1.0.tar.gz", repos = NULL)
+devtools::install_github("Quamena/Modana")
 ```
 
 ## Example
@@ -65,7 +65,7 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                     trt = "trt", data = datt,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
-names(getres)
+#names(getres)
 summary(getres, 4)
 ```
 

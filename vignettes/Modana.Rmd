@@ -30,12 +30,12 @@ This `Modana` package implements a refinement of moderation analysis with binary
 
 ## Installing and using the package
 The package is in development stage and only available on github link [github](https://github.com/Quamena/Modana).
-You can install the `Modana` package and use it for your moderation analysis
-```{r, eval = FALSE}
-install.packages("Modana_0.1.0.tar.gz", repos = NULL)
+You can install the `Modana` package and use it for your moderation analysis.
+```{r,  eval = FALSE, message = FALSE, warning=FALSE}
+devtools::install_github("Quamena/Modana")
 ```
 
-```{r, warning=FALSE, echo=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, echo=FALSE, message=FALSE}
 install.packages("~/Modana_0.1.0.tar.gz", repos = NULL)
 ```
 
@@ -183,8 +183,6 @@ If the `detail` argument is set to TRUE, the function will print summary results
 
 ### Example usage on a simulated data
 ```{r}
-#require(data.table)
-#require(geepack)
 getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                      detail = FALSE, y = "y",
                     trt = "trt", data = datt,
