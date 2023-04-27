@@ -140,5 +140,5 @@ plot(getres)
 confint(getres, model = 3)
 }
 \references{
-\href{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206}{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206}
+Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206.
 }

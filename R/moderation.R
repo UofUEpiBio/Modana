@@ -15,9 +15,7 @@
 #' columns in the original data \code{data} and then stacking the resultant data on top of the original \code{data}. The dummy variable \code{z}  is introduced to distinguish the two glm models.
 #' @param data original data frame containing the variables in the model.
 #' @return An object of type \code{glm} and \code{geeglm}.
-#'
-#' @references \href{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206}{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206}
-#'
+#' @references Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206.
 #' @examples
 #' set.seed(1001)
 #' b0 <- c(-1.5, 1.5, 1.5, -2, 2, -.5, 2, 1.5)
@@ -306,8 +304,8 @@ summary.refinedmod <- function(object, model = NULL, ...){
 
 #' @export
 print.modana_summary <- function(x,...) {
-  cat(x)
-  invisible(x)
+  cat(as.data.frame(x))
+  invisible(as.data.frame(x))
 }
 
 #' @rdname refinedmod
