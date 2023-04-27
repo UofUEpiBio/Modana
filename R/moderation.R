@@ -32,7 +32,7 @@
 #'                      effmod = c("x1", "x2"),
 #'                       corstr = "independence")
 #' names(getres)
-#' print(getres)
+#' print(getres, model = 1)
 #' dsu <- summary(getres, 1); dsu
 #' summary(getres, model = NULL)
 #' plot(getres)
@@ -331,6 +331,9 @@ print.refinedmod <- function(x, model = 1, ...){
   #invisible(x)
 }
 
+
+
+
 #' @rdname refinedmod
 #' @param x an object class of \code{refinedmod}
 #' @param ... Other arguments, which are passed to the functions in \code{ggplot2}.
@@ -355,7 +358,7 @@ plot.refinedmod <- function(x, ...){
 #' @param parm a specification of which parameters are to be given confidence intervals, either a vector of numbers or a vector of names. If missing, all parameters are considered.
 #' @param level the confidence level required.
 #' @param ... other argument not in use at the moment 
-confint.refinedmod <- function(object, parm, level = 0.90, model = 1, ...) {
+confint.refinedmod <- function(object, parm, level = 0.95, model = 1, ...) {
   
   #if(any(colnames(summary(x)$coefficients)=="Wald"))
   if(model==1){

@@ -44,7 +44,7 @@ sim_data(
 
 \method{plot}{refinedmod}(x, ...)
 
-\method{confint}{refinedmod}(object, parm, level = 0.9, model = 1, ...)
+\method{confint}{refinedmod}(object, parm, level = 0.95, model = 1, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
@@ -133,7 +133,7 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
 names(getres)
-print(getres)
+print(getres, model = 1)
 dsu <- summary(getres, 1); dsu
 summary(getres, model = NULL)
 plot(getres)
