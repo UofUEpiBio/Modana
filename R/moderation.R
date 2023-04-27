@@ -299,14 +299,14 @@ summary.refinedmod <- function(object, model = NULL, ...){
                   s <- paste(v, collapse = "\n") # single string
                 }
              # cat(s)
-            structure(s, class = "modana_summary")
+            structure(s, class = "summary.refinedmod")
 }
 
-#' @export
-print.modana_summary <- function(x,...) {
-  cat(as.data.frame(x))
-  invisible(as.data.frame(x))
-}
+#' @export 
+ print.summary.refinedmod <- function(x,...){
+   cat(x)
+  invisible(x)
+ }
 
 #' @rdname refinedmod
 #' @export
