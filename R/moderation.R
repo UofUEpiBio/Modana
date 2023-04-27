@@ -16,7 +16,7 @@
 #' @param data original data frame containing the variables in the model.
 #' @return An object of type \code{glm} and \code{geeglm}.
 #'
-#' @references \href{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}
+#' @references \href{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206}{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;32(4):732-747. doi:10.1177/09622802231151206}
 #'
 #' @examples
 #' set.seed(1001)

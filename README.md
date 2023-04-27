@@ -10,15 +10,15 @@
 
 The goal of the `Modana` package is to implement a refinement of
 moderation analysis with binary outcomes, as proposed by [Anto and Su
-(2023)](https://journals.sagepub.com/doi/abs/10.1177/09622802231151206?journalCode=smma).
-The function fits three models of interest: a direct model, an inverse
-model, and a generalized estimating equation (GEE) model. The direct and
-inverse models are fitted using the `glm` function to verify the
-symmetry property of odds ratio/relative risk in moderation analysis for
-the main treatment effect as well as the moderating effects. The GEE
-model is fitted using the `geeglm` function and is used to estimate the
-treatment effect accounting for within-cluster correlation. The `Modana`
-package has three different built functions.
+(2023)](https://doi.org/10.1177/09622802231151206). The function fits
+three models of interest: a direct model, an inverse model, and a
+generalized estimating equation (GEE) model. The direct and inverse
+models are fitted using the `glm` function to verify the symmetry
+property of odds ratio/relative risk in moderation analysis for the main
+treatment effect as well as the moderating effects. The GEE model is
+fitted using the `geeglm` function and is used to estimate the treatment
+effect accounting for within-cluster correlation. The `Modana` package
+has three different built functions.
 
 ## Installation
 
