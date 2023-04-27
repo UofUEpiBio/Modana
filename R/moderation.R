@@ -32,7 +32,7 @@
 #'                      effmod = c("x1", "x2"),
 #'                       corstr = "independence")
 #' names(getres)
-#' print(getres, model = 1)
+#' print(getres, model = 2)
 #' dsu <- summary(getres, 1); dsu
 #' summary(getres, model = NULL)
 #' plot(getres)
@@ -311,6 +311,7 @@ summary.refinedmod <- function(object, model = NULL, ...){
 #' @rdname refinedmod
 #' @export
 #' @param x an object class of \code{refinedmod}
+#' @param model index indicating the model call to print
 #' @param ... other argument not in use at the moment 
 print.refinedmod <- function(x, model = 1, ...){
   if(model==1){

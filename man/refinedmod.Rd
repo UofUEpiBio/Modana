@@ -133,7 +133,7 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                      effmod = c("x1", "x2"),
                       corstr = "independence")
 names(getres)
-print(getres, model = 1)
+print(getres, model = 2)
 dsu <- summary(getres, 1); dsu
 summary(getres, model = NULL)
 plot(getres)
