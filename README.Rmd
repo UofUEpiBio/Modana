@@ -95,7 +95,14 @@ res <- refinedmod(formula = response ~ cryo + age + time + type,
 
 summary(res, 4)
 ```
+
+
 ```{r}
 plot(res)
+```
+
+
+```{r}
+confint(res, model = 2)
 ```
 

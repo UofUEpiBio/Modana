@@ -38,6 +38,7 @@
 #' dsu <- summary(getres, 1); dsu
 #' summary(getres, model = NULL)
 #' plot(getres)
+#' confint(getres, model = 3)
 #' @export
 refinedmod <- function(formula, y = "y", trt = "trt",
                        effmod = NULL, data, detail = FALSE, ...){
@@ -339,3 +340,33 @@ plot.refinedmod <- function(x, ...){
 }
 
 
+#' @rdname refinedmod
+#' @export
+#' @param object an object fitted model of class of \code{refinedmod}
+#' @param model index indicating the summary call to print
+#' @param parm a specification of which parameters are to be given confidence intervals, either a vector of numbers or a vector of names. If missing, all parameters are considered.
+#' @param level the confidence level required.
+#' @param ... other argument not in use at the moment 
+confint.refinedmod <- function(object, parm, level = 0.90, model = 1, ...) {
+  
+  #if(any(colnames(summary(x)$coefficients)=="Wald"))
+  if(model==1){
+  out <- coef(summary(object[["Directmodel"]]))
+  }
+  else if(model==2){
+    out <- coef(summary(object[["Inversemodel"]]))
+  }else{
+    out <- summary(object[["Refinedmodel"]])$coefficients
+    out$Wald <- (out$Estimate)/(out$Std.err)
+    out$'Pr(>|W|)' <- 2*pnorm(-abs(out$Wald))
+    names(out)[names(out) == "Wald"] <- "z value"
+    names(out)[names(out) == "Pr(>|W|)"] <- "Pr(>|z|)"
+    names(out)[names(out) == "Std.err"]  <- "Std. Error"
+  }
+  mult <- qnorm((1+level)/2)
+  citab <- with(as.data.frame(out),
+                cbind(lwr=Estimate-mult*`Std. Error`,
+                      upr=Estimate+mult*`Std. Error`))
+  rownames(citab) <- rownames(out)
+  citab[parm, ]
+}

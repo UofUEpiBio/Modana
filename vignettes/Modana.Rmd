@@ -221,3 +221,7 @@ summary(res)
 plot(res)
 ```
 
+```{r}
+confint(res, model = 3)
+```
+

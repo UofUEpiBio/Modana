@@ -7,6 +7,7 @@
 \alias{summary.refinedmod}
 \alias{print.refinedmod}
 \alias{plot.refinedmod}
+\alias{confint.refinedmod}
 \title{Refined moderation Analysis with binary outcomes}
 \usage{
 refinedmod(
@@ -42,6 +43,8 @@ sim_data(
 \method{print}{refinedmod}(x, ...)
 
 \method{plot}{refinedmod}(x, ...)
+
+\method{confint}{refinedmod}(object, parm, level = 0.9, model = 1, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
@@ -56,7 +59,7 @@ sim_data(
 
 \item{detail}{a logical argument specified to print summary results of the direct and inverse models}
 
-\item{...}{Other arguments, which are passed to the functions in \code{ggplot2}.}
+\item{...}{other argument not in use at the moment}
 
 \item{n}{the number of observations to generate.}
 
@@ -84,11 +87,15 @@ sim_data(
 
 \item{details}{a logical value indicating whether to print details about the generated data. The default value is FALSE.}
 
-\item{object}{an object class of \code{refinedmod}}
+\item{object}{an object fitted model of class of \code{refinedmod}}
 
 \item{model}{index indicating the summary call to print}
 
 \item{x}{an object class of \code{refinedmod}}
+
+\item{parm}{a specification of which parameters are to be given confidence intervals, either a vector of numbers or a vector of names. If missing, all parameters are considered.}
+
+\item{level}{the confidence level required.}
 }
 \value{
 An object of type \code{glm} and \code{geeglm}.
@@ -114,7 +121,7 @@ The function \code{sim_data()} generates simulated data for a randomized control
 set.seed(1001)
 b0 <- c(-1.5, 1.5, 1.5, -2, 2, -.5, 2, 1.5)
 a0 <- c(-1, 1.5, -1, 1.5)
-datt <- sim_data(n = 100, b0, a0 = NULL, binary.Xs = FALSE,
+datt <- sim_data(n = 100, b0 = b0, a0 = NULL, binary.Xs = FALSE,
                   sigma = 1, uniform = FALSE, c0 = 1,
                    link.function = "logistic", rho = 0.2,
                    observational = FALSE, trt.p = 0.5,
@@ -130,6 +137,7 @@ print(getres)
 dsu <- summary(getres, 1); dsu
 summary(getres, model = NULL)
 plot(getres)
+confint(getres, model = 3)
 }
 \references{
 \href{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}{Anto E, Su X. Refined moderation analysis with binary outcomes in precision medicine research. Statistical Methods in Medical Research. 2023;0(0). doi:10.1177/09622802231151206}
