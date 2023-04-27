@@ -103,6 +103,6 @@ plot(res)
 
 
 ```{r}
-confint(res, model = 2)
+confint(res, model = 3)
 ```
 

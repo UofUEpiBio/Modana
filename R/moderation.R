@@ -365,7 +365,7 @@ confint.refinedmod <- function(object, parm, level = 0.90, model = 1, ...) {
   }
   mult <- qnorm((1+level)/2)
   citab <- with(as.data.frame(out),
-                cbind(lwr=Estimate-mult*`Std. Error`,
+                cbind(Coef = Estimate, lwr=Estimate-mult*`Std. Error`,
                       upr=Estimate+mult*`Std. Error`))
   rownames(citab) <- rownames(out)
   citab[parm, ]
