@@ -40,7 +40,7 @@ sim_data(
 
 \method{summary}{refinedmod}(object, model = NULL, ...)
 
-\method{print}{refinedmod}(x, ...)
+\method{print}{refinedmod}(x, model = 1, ...)
 
 \method{plot}{refinedmod}(x, ...)
 

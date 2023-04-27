@@ -312,14 +312,21 @@ summary.refinedmod <- function(object, model = NULL, ...){
 #' @export
 #' @param x an object class of \code{refinedmod}
 #' @param ... other argument not in use at the moment 
-print.refinedmod <- function(x, ...){
-  #if(any(colnames(summary(x)$coefficients)=="Wald"))
+print.refinedmod <- function(x, model = 1, ...){
+  if(model==1){
+    out <- coef(summary(x[["Directmodel"]]))
+  }
+  else if(model==2){
+    out <- coef(summary(x[["Inversemodel"]]))
+  }else{
     out <- summary(x[["Refinedmodel"]])$coefficients
     out$Wald <- (out$Estimate)/(out$Std.err)
     out$'Pr(>|W|)' <- 2*pnorm(-abs(out$Wald))
     names(out)[names(out) == "Wald"] <- "z value"
     names(out)[names(out) == "Pr(>|W|)"] <- "Pr(>|z|)"
     names(out)[names(out) == "Std.err"]  <- "Std. Error"
+    
+}
     return(out)
   #invisible(x)
 }
@@ -337,6 +344,9 @@ plot.refinedmod <- function(x, ...){
  pl
 }
 
+#coef.refinedmod <- function(object, model = 1, ...){
+  
+#}
 
 #' @rdname refinedmod
 #' @export
