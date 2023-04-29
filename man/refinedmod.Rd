@@ -134,7 +134,7 @@ getres <- refinedmod(formula = y ~ trt + x1 + x2 + x3 + x4,
                       corstr = "independence")
 names(getres)
 print(getres, model = 2)
-dsu <- summary(getres, 1); dsu
+dsu <- summary(getres, 1); dsu[, 2, drop = FALSE]
 summary(getres, model = NULL)
 plot(getres)
 confint(getres, model = 3)

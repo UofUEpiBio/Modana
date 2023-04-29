@@ -33,7 +33,7 @@
 #'                       corstr = "independence")
 #' names(getres)
 #' print(getres, model = 2)
-#' dsu <- summary(getres, 1); dsu
+#' dsu <- summary(getres, 1); dsu[, 2, drop = FALSE]
 #' summary(getres, model = NULL)
 #' plot(getres)
 #' confint(getres, model = 3)
@@ -274,39 +274,60 @@ sim_data <- function(n = 100, b0, a0 = NULL, link.function = "logistic",
   dat
 }
 
+
+
 #' @rdname refinedmod
 #' @export
 #' @param object an object class of \code{refinedmod}
 #' @param model index indicating the summary call to print
 #' @param ... other argument not in use at the moment 
 summary.refinedmod <- function(object, model = NULL, ...){
-                if(!is.null(model)){
-                if(model==1){
-                out <- capture.output(object[["allsummary.coef"]][["out.direct"]])
-                v <- c("Model summary of the direct estimation:", out, "\n") # char vec
-                s <- paste(v, collapse = "\n") # single string
-                }else if(model == 2){
-                  out <- capture.output(object[["allsummary.coef"]][["out.inverse"]])
-                  v <- c("Model summary of the inverse estimation:", out, "\n") # char vec
-                  s <- paste(v, collapse = "\n") # single string
-                }else{
-                  out <- capture.output(object[["allsummary.coef"]])
-                  v <- c("Model summary of the direct, inverse and inverse estimation:", out, "\n") # char vec
-                  s <- paste(v, collapse = "\n")}
-                }else{
-                  out <- capture.output(object[["allsummary.coef"]][["out.gee"]])
-                  v <- c("Model summary of the refined GEE estimation:", out, "\n") # char vec
-                  s <- paste(v, collapse = "\n") # single string
-                }
-             # cat(s)
-            structure(s, class = "summary.refinedmod")
+  if(!is.null(model)){
+    if(model==1){
+      out <- object[["allsummary.coef"]][["out.direct"]]
+      v <- "Model summary of the direct estimation:\n" # char vec
+      # s <- paste(v, collapse = "\n") # single string
+    }else if(model == 2){
+      out <- object[["allsummary.coef"]][["out.inverse"]]
+      v <- "Model summary of the inverse estimation:\n" # char vec
+      #s <- paste(v, collapse = "\n") # single string
+    }else{
+      out <- object[["allsummary.coef"]]
+      v <- "Model summary of the direct, inverse and inverse estimation:\n"
+      }# char vec
+      #s <- paste(v, collapse = "\n")}
+  }else{
+    out <- object[["allsummary.coef"]][["out.gee"]]
+    v <- "Model summary of the refined GEE estimation:\n" # char vec
+    #s <- paste(v, collapse = "\n") # single string
+  }
+  # cat(s)
+  structure(
+    out,
+    message = v,
+    class = c("summary_refinedmod", class(out))
+    )
+
 }
 
-#' @export 
- print.summary.refinedmod <- function(x,...){
-   cat(x)
-  invisible(x)
+
+#' @export
+ print.summary_refinedmod <- function(x, ...) {
+   
+   cat(attr(x, "message"))
+   y <- x
+   attr(y, "message") <- NULL
+   class(y) <- class(x)[2] 
+   
+   # Printing the coefficient only
+   print(y)
+   
+   # But still returning invisibly the mymodel_summary object
+   invisible(x)
+   
  }
+ 
+ 
 
 #' @rdname refinedmod
 #' @export

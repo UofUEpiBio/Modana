@@ -3,7 +3,7 @@
 S3method(confint,refinedmod)
 S3method(plot,refinedmod)
 S3method(print,refinedmod)
-S3method(print,summary.refinedmod)
+S3method(print,summary_refinedmod)
 S3method(summary,refinedmod)
 export(refinedmod)
 export(sim_data)

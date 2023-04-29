@@ -73,7 +73,7 @@ You can call each elements of listed models
 
 Mostly importantly, we can print the results of the refined estimation.
 ```{r}
-print(getres)
+print(getres, model = 2)
 ```
 
 
