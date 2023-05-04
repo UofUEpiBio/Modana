@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # Modana
 
 <!-- badges: start -->
+[![DOI](https://pubmed.ncbi.nlm.nih.gov/36721908/status.svg)](https://doi.org/ 10.1177/09622802231151206)
 [![R-CMD-check](https://github.com/Quamena/Modana/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Quamena/Modana/actions/workflows/R-CMD-check.yaml)
 [![Project Status: Active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Travis build status](https://travis-ci.com/Quamena/Modana.svg?branch=master)](https://travis-ci.com/Quamena/Modana)

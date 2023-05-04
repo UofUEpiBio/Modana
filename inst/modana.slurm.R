@@ -11,7 +11,6 @@ set.seed(100)
 b0 <- c(-1, 1, 1, -1, 1, -1, 2, 0) # Multiple Interaction Terms 
 b0 <- c(-1, 0.5, 0.5, -1, 1, 0, 0, 0) # Verify property one (Main Effect Estimation)
 #b0 <- c(-1, 0.5, 0.5, -0.5, 1, 2) # Moderating Effect Estimation
-#a0 <- c(-1, 1.5, -1, 1.5)
 N = c(100, 180, 500, 1000)
 vartype <- c("continuous", "binary")
 corr <- c(0.2, 0.5, 0.8)
@@ -39,13 +38,6 @@ simul <- function(nrun){
                              trt = "trt", data = datt,
                              effmod = c("x1", "x2", "x3"),
                              corstr = "independence")
-        # geecoefs <- summary(getres)[c(2,12,13),  1:2]
-        # inversecoefs <-summary(getres, model = 2)[c(2,7, 8),  1:2]
-        # directcoefs <- summary(getres, model = 1)[c(2,7,8),  1:2]
-        # geeconfint <- confint(getres, parm = c(2,12,13), level = .95, model = 3)[, -1]
-        # inverseconfint<- confint(getres, parm = c(2,7,8), level = .95, model = 2)[, -1]
-        # directconfint <- confint(getres, parm = c(2,7,8), level = .95, model = 1)[, -1]
-        
         
         # Verify property one (Main Effect Estimation)
         geecoefs <- summary(getres)[c(2,10:12),  1:2]
@@ -82,12 +74,7 @@ ncores <- 2
 njobs <- 20
 niter <- 1000
 
-#i = 1
 
-
-#library.path <- .libPaths()
-#library("slurmR", lib.loc = library.path)
-# Approximation
 job <- do.call(rbind.data.frame, Slurm_lapply(
   1:niter, simul,
   njobs    = njobs,
@@ -99,7 +86,5 @@ job <- do.call(rbind.data.frame, Slurm_lapply(
    partition =  "lonepeak"), #"notchpeak-shared-short"), 
   export = c("b0", "N", "vartype", "corr")
   ))
-#ans <- Slurm_collect(job)
-#resd <- do.call(rbind, job)  
 res <- "~/Modana/jobarrays"
 saveRDS(job, file = file.path(res, "maineff.rds"))

@@ -14,3 +14,9 @@ NAMESPACE: R/*
 docs: NAMESPACE
   
 .PHONY: build check install docs
+
+covr: 
+	rm -rf covr || mkdir covr && \
+		Rscript -e 'pth <- normalizePath("~/Modana/covr");Sys.setenv(SLURMR_TMP_PATH=pth);saveRDS(covr::package_coverage(quiet = FALSE, clean = FALSE, install_path = pth), "covr/dat.rds")' && \
+		echo "Now you can go ahead and upload the coverage"
+
