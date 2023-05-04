@@ -424,10 +424,10 @@ where $\pi_{ij} = E(y'_{ij} \,|\, t'_{ij}, z_{ij}, \textbf{x}_{ij}) = \Pr(y'_{ij
 ```{r}
 library(ggplot2)
 library(dplyr)
-fn <- system.file(file.path("~/Modana/inst",
-  "array.slurm", "modana.slurm.R"),
-  package = "Modana"
-  )
+# fn <- system.file(file.path("~/Modana/inst",
+#   "array.slurm", "modana.slurm.R"),
+#   package = "Modana"
+#   )
 maineff <- readRDS("~/Modana/inst/maineff.rds")
 func <- \(x) as.numeric(as.character(x))
 plotdata <- maineff %>% dplyr::mutate_at(c("lwr", "upr"), func) %>% 
