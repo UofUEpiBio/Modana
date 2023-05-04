@@ -1,0 +1,355 @@
+---
+title: "PHS 7045: Advanced Programming"
+subtitle: "Presentation - Simulation Studies with Modana Package"
+author: "Eric Anto"
+format:
+  revealjs:
+    slide-number: true
+    embed-resources: true
+---
+
+
+```{r}
+#| echo: false
+#| label: setup
+#| include: false
+library(dplyr)
+library(ggplot2)
+knitr::opts_chunk$set(eval = TRUE, results = "hold", fig.width = 7, fig.height = 7)
+slides_eval <- TRUE
+```
+
+## Moderation Analysis with binary outcomes using the Modana package
+::: {.r-fit-text}
+
+Moderation analysis essentially involves treatment-by-covariates interactions.
+
+
+::: {.fragment .fade-up}
+- We employ the nice symmetry property about ratio of odds ratios, which suggests that heterogeneous treatment effects could be equivalently estimated via a role exchange between the outcome and treatment variable in logistic regression models. 
+:::
+
+
+::: {.fragment .fade-up}
+- Refined inference on moderating effects can be obtained by rearranging data and combining two models into one via a GEE (generalized estimating equation) approach. 
+:::
+
+::: {.fragment .fade-up}
+- This approach can be helpful in identifying treatment-by-covariate interactions (a common problem in the search for important moderators). 
+:::
+
+::: {.fragment .fade-up}
+- We use the `Modana` package to carry out simulation.
+:::
+
+:::
+
+
+## The set-up
+
+::: {.r-fit-text}
+- Suppose that the available data, $\mathcal{D} = \left\{(y_i,t_i, x_i): i=1, \ldots, n \right\}$, consist of $n$ IID copies of $(y, t, x)$, where both $y$ and $t$ are 0/1-coded binary variables and $X \in \mathbb{R}^p$ is a $p$-dimensional covariate vector.
+
+- A $y$ value of 1 indicates the occurrence of an event of interest (e.g., death) and a $y$ value of 0 indicates the absence of the event (e.g., survival). 
+
+-  A treatment assignment variable $t$ has value 1 for participants who are randomized into the treated group and value 0 for the untreated.
+
+- With the covariate vector fixed at $\bf{x}=\bf{a},$. The ratio of the odds in the treated group and the odds in the untreated group is defined as.
+\begin{equation}
+\label{OR-Y}
+OR^{(y)}_{\textbf{a}} =  \frac{\Pr(y=1\, |\, t=1, \textbf{x}=\textbf{a}) / \Pr(y=0\, |\, t=1, \textbf{x}=\textbf{a})}{ \Pr(y=1\, |\, t=0, \textbf{x}=\textbf{a}) / \Pr(y=0\, |\, t=0, \textbf{x}=\textbf{a})}
+\end{equation}
+
+::: {.fragment .fade-in}
+- Ratio of Odds Ratios (ROR)
+  - In moderation analysis, one is primarily concerned about differential treatment           effects among patients with heterogeneous characteristics.
+  - Consider two sets of patients or individuals: one with covariates $\bf{x}= \bf{a}$ and     the other with covariates $\bf{x} = \bf{b}$
+  
+:::
+
+:::
+
+
+
+## The set-up (Cont'd)
+::: {.r-fit-text}
+
+::: {.fragment .fade-up}
+- Ratio of Odds Ratios (ROR)
+ - By definition, ROR compares the treatment efficacy (measured by OR) between the two       patient sets, as given by $ROR^{(y)}(\textbf{a}:\textbf{b}) = OR^{(y)}_{\textbf{a}}/ OR^{(y)}_{\textbf{b}}.$
+ - If we swap the roles of $y$ and $t$, both OR and ROR remain the same. 
+ - Specifically, let $OR^{(t)}_{\textbf{a}}$ denote the odds ratios of being treated for     comparing cases ($y=1$) versus controls ($y=0$), while fixing $\textbf{x}=\textbf{a}$, as
+ 
+\begin{equation}
+\label{OR-T}
+OR^{(t)}_{\textbf{a}} =  \frac{\Pr(t=1\, |\, y=1, \textbf{x}=\textbf{a}) / \Pr(t=0\, |\, y=1, \textbf{x}=\textbf{a})}{\Pr(t=1\, |\, y=0, \textbf{x}=\textbf{a}) / \Pr(t=0\, |\, y=0, \textbf{x}=\textbf{a})}.
+\end{equation}
+
+- Define $ROR^{(t)}(\textbf{a}:\textbf{b}) = OR^{(t)}_{\textbf{a}} / OR^{(t)}_{\textbf{b}}$ to be the ROR compares the OR of being treated between the two patients sets.
+
+:::
+
+:::
+
+
+## The set-up (Cont'd)
+::: {.r-fit-text}
+
+The proposition:
+
+::: {.fragment .fade-up}
+
+Let $OR^{(y)}_{\textbf{a}},$ $OR^{(t)}_{\textbf{a}}$, $ROR^{(y)}(\textbf{a}:\textbf{b})$ and $ROR^{(t)}(\textbf{a}:\textbf{b})$ be the odds ratios and the ratios of odds ratios as defined above. We have 
+
+
+(i)  $OR^{(y)}_{\textbf{a}} = OR^{(t)}_{\textbf{a}},~ \forall \, \textbf{a}.$ 
+(ii) $ROR^{(y)}(\textbf{a}:\textbf{b}) = ROR^{(t)}(\textbf{a}:\textbf{b}),~ \forall \, \textbf{a}, \textbf{b}.$
+
+:::
+
+:::
+
+## Implications on Logistic Regression Models
+
+::: {.r-fit-text}
+Suppose that one is interested in the main effect of treatment $t$ and fits the following two logistic modes by swapping the roles of $y$ and $t$
+
+\begin{equation}
+\left\{
+\begin{array}{lcl}
+\mbox{logit} \Pr(y=1 \, | \, t, \textbf{x}) &=&  \beta_0 + \beta_1 t + \textbf{x}^T\bf{\beta}_2 + t \cdot \text{x}^T \bf{\gamma}  \\
+\mbox{logit} \Pr(t=1 \, | \, y, \textbf{x}) &=&  \beta'_0 + \beta'_1 y + \bf{x}^T \bf{\beta}'_2 + y \cdot \textbf{x}^T \bf{\gamma}'
+\end{array}
+\right.
+\label{model-main}
+\end{equation}
+
+- Our proposition `(i)` implies that  $\beta_1 = \beta'_1,$ since $\exp(\beta_1) = OR^{(y)}_{\textbf{a}}$ and $\exp(\beta'_1) = OR^{(t)}_{\textbf{a}}$ with any fixed $\textbf{x} = \textbf{a}.$
+
+- By Proposition (ii), $\exp(\gamma_j) = ROR^{(y)}(\textbf{a}: \textbf{b})$ and $\exp(\gamma'_j) = ROR^{(t)}(\textbf{a}: \textbf{b}).$. Thus, $\gamma_j = \gamma'_j$ and hence $\bf{\gamma} =\bf{\gamma}'.$
+:::
+
+
+## Refined Estimation of Moderating Effects
+
+::: {.r-fit-text}
+
+We can be further the above models reduced to 
+
+\begin{equation}
+\left\{
+\begin{array}{lcl}
+\mbox{logit} \Pr(y=1 \, | \, t, \textbf{x}) &=&  \beta_0 + \beta_1 t + \textbf{x}^T\bf{\beta}_2 + t \cdot \text{x}^T \bf{\gamma}  \\
+\mbox{logit} \Pr(t=1 \, | \, y, \textbf{x}) &=&  \beta'_0 + \beta_1 y + \bf{x}^T \bf{\beta}'_2 + y \cdot \textbf{x}^T \bf{\gamma}
+\end{array}
+\right.
+\label{model-main1}
+\end{equation}
+
+::: {.fragment .fade-in}
+
+- To come up with a better estimator of $\bf{\gamma}$ in moderation analysis, 
+  - we estimate the parameters by pooling together the likelihood or quasi-likelihood functions of the two models as if they were built on independent data. 
+  - The main idea of this computing trick is to rearrange data
+into a format for clustered or longitudinal data
+
+  - Define $y'_{ij} = y_i$  if $j=1$ and  $y'_{ij} = t_i$ if $j=2$; define 
+$t'_{ij} = t_i$ if $j=1$ and $t'_{ij} = y_i$ if $j=2$; let $z_{ij} =j-1$ and $\textbf{x}_{ij}=\textbf{x}_i$ for $j=1, 2$ and $i=1, \ldots , n.$  
+  - We arrive at a clustered data set $\mathcal{D}'=\{(y'_{ij}, t'_{ij}, z_{ij}, \textbf{x}_{ij}): i=1, \ldots, n \,\,\text{and} \,\, j=1, 2\}$, which is obtained by swapping the response and treatment columns in the original data $\mathcal{D}$ and then stacking it on top of $\mathcal{D}$. 
+  - The dummy variable $z$ is introduced to distinguish the two models. 
+  
+:::
+
+:::
+
+
+## Refined Estimation of Moderating Effects (cont'd)
+
+::: {.r-fit-text}
+Consider the following marginal model for $y'_{ij}$
+
+::: {.fragment .fade-in}
+
+\begin{eqnarray}
+\label{model-marginal}
+\log \frac{\pi_{ij}}{1- \pi_{ij}} & = & \theta_0 + \theta_1 z_{ij} + 
+\theta_2 t'_{ij} + \bf{\theta}_3^T \textbf{x}_{ij} + z_{ij} \cdot \bf{\theta}_4^T \textbf{x}_{ij} + t'_{ij}\cdot \bf{\theta}_5^T \textbf{x}_{ij},
+\end{eqnarray}
+
+where $\pi_{ij} = E(y'_{ij} \,|\, t'_{ij}, z_{ij}, \textbf{x}_{ij}) = \Pr(y'_{ij}=1\,|\, t'_{ij}, z_{ij}, \textbf{x}_{ij})$. 
+
+- Introduce $\textbf{x}'_{ij}=(1, z_{ij}, t'_{ij}, \textbf{x}_i, z_{ij} \textbf{x}_i^T, t'_{ij} \textbf{x}_i^T)^T$ to rewrite the above model as $\pi_{ij} = \pi( \bf{\theta}^T \textbf{x}'_{ij})$, where the expit or logistic function $\pi(x) = \exp(x) / \{ 1 + \exp(x)\}$ is the inverse function of the logit function.
+
+:::
+
+::: {.fragment .fade-in}
+
+- By reparameterization of the above model: 
+  - $\theta_0 = \beta_0$, $\theta_1 = \beta'_0- \beta_0$, $\theta_2 = \beta_1$,               $\bf{\theta}_3 = \bf{\beta}_2$,  $\bf{\theta}_4 = \bf{\beta}'_2 - \bf{\beta}_2$
+  - Importantly, $\bf{\theta}_5 = \bf{\gamma}.$ 
+  - Parameters $\bf{\theta} = (\theta_0, \theta_1, \ldots, \bf{\theta}_5^T)^T$ in the marginal model above can be conveniently estimated with the GEE approach. 
+
+:::
+
+:::
+
+
+## Numerical Results
+
+::: {.r-fit-text}
+
+
+::: {.fragment .fade-in}
+
+- Data are generated from the model
+
+\begin{equation}
+\label{model-simulation}
+\log \frac{\Pr(y_i=1 \, | \, t_i, \textbf{x}_i)}{\Pr(y_i=0 \, | \, t_i, \textbf{x}_i)} = 
+\beta_0 + \beta_1 t_i + \bf{x}_i^T \bf{\beta}_2 + t_i \cdot \textbf{x}_i^T \bf{\gamma}, 
+\end{equation}
+
+:::
+
+::: {.fragment .fade-in}
+
+- Main Effect Estimation (Based on Proposition `(i)`):
+
+  - We set $\bf{\gamma} = \bf{0}$ so that the model is additive; in addition, $\beta_0= -1$, $\beta_1 = 0.5,$ $\bf{\beta}_2 = (0.5, -1, 1)^T.$ We are interested in estimating $\beta_1$.
+
+:::
+
+::: {.fragment .fade-in}
+
+- Moderating Effect Estimation (Based on Proposition `(ii)`):
+\begin{eqnarray}
+\log \frac{\Pr(y=1 \, | \, t, \textbf{x})}{\Pr(y=0 \, | \, t, \textbf{x})} = -1 + 0.5 \, t + 0.5 \, x_1 - \frac{b}{2} x_2 +  x_3 + btx_1, 
+\label{model-studyII}
+\end{eqnarray}
+  - where $x_1$ is the only effect-moderator of the treatment with slope $\gamma =b$ is of interest. The value of $b$ varies  from no to weak and strong moderating effects (e.g., $\{0.0, 0.5, 1.0, \ldots, 5\}$). 
+:::
+
+
+:::
+
+## Simulation Results
+
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r}
+#| fig-cap: Empirical densities from simulation results for assessing the main effect of treatment  
+#| warning: false
+
+maineff <- readRDS("maineff.rds")
+func <- \(x) as.numeric(as.character(x))
+plotdata <- maineff %>% dplyr::mutate_at(c("lwr", "upr"), func) %>% 
+  tibble::remove_rownames() %>% as.data.frame()
+
+#Plot of main effect
+plotdata %>% filter(Est %in% c("y", "trt"), 
+              corcoef == .5, N %in% c(100, 500),
+              vartype %in% "continuous") %>% 
+  group_by(method) %>%
+  ggplot(aes(Estimate)) +
+  geom_density(col = "red", fill = "cadetblue") +
+ # facet_grid(rows = vars(method), scales = "free") +
+  facet_wrap(vars(N, method))
+
+```
+:::
+
+::: {.column width="60%"}
+```{r}
+#Summary table for Main effect
+summtab <- plotdata %>% 
+  filter(Est %in% c("trt", "y"), corcoef == .5,
+         N %in% c(100, 500),
+         vartype %in% "continuous") %>% 
+  group_by(method, N) %>% 
+  summarise(Means = mean(Estimate), SD = sd(Estimate),
+            "Average SE" = mean(`Std. Error`))
+knitr::kable(summtab)
+
+```
+:::
+
+::::
+
+
+
+## Simulation Results (cont'd)
+::: {.notes}
+Speaker notes go here.
+:::
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r}
+#| fig-cap: Empirical densities from simulation results for assessing the moderating effect  
+#| warning: false
+
+effmod <- readRDS("effmod.rds")
+func <- \(x) as.numeric(as.character(x))
+plotdata <- effmod %>% dplyr::mutate_at(c("lwr", "upr"), func) %>% 
+  tibble::remove_rownames() %>% as.data.frame()
+
+#Plot of moderating effect
+plotdata %>% filter(Est %in% c("y:x1", "trt:x1"), 
+                    corcoef == .5, N %in% c(100, 500),
+                    vartype %in% "continuous") %>% 
+  #group_by(method) %>%
+  ggplot(aes(Estimate)) +
+  geom_density(col = "red", fill = "cadetblue") +
+  # facet_grid(rows = vars(method), scales = "free") +
+  facet_wrap(vars(N, method))
+
+```
+:::
+
+::: {.column width="60%"}
+```{r}
+
+#Summary table for Moderating effect
+sumtab <- plotdata %>% dplyr::mutate_at(c("lwr", "upr"), func) %>% 
+  tibble::remove_rownames() %>% as.data.frame() %>%
+  mutate(Z = pchisq((Estimate/`Std. Error`)^2, df = 1, lower.tail=FALSE),
+         Pind = ifelse(Z <= 0.05, 1, 0)) %>%
+filter(Est %in% c("y:x1", "trt:x1"), corcoef == .5,
+       N %in% c(100, 1000),
+       vartype %in% "continuous") %>%
+  group_by(method, N) %>% summarise(
+    Means = mean(Estimate), SD = sd(Estimate),
+    "Average SE" = mean(`Std. Error`),
+   # POWER = mean(Pind),
+  lower = Means-qnorm((1+.95)/2)*`Average SE`,
+  upper = Means+qnorm((1+.95)/2)*`Average SE`,
+  conf_width = upper - lower)
+knitr::kable(sumtab)
+```
+:::
+
+::::
+
+## Results
+
+```{r}
+#| fig-cap: Empirical confidence interval from simulation results for assessing the moderating effect 
+plotdata %>% filter(Est %in% c("y:x1", "trt:x1"), corcoef == .5,
+                    N %in% c(100, 500),
+                    vartype %in% "continuous") %>%
+  #group_by(method) %>%
+ggplot(aes(Estimate)) +        # ggplot2 plot with confidence intervals
+  #geom_point() +
+  geom_errorbar(aes(ymin = lwr, ymax = upr, col = "cadetblue")) +
+  facet_wrap(vars(N, method))
+
+```
+
+::: {.notes}
+Speaker notes go here.
+:::
